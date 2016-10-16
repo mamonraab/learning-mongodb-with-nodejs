@@ -26,7 +26,27 @@ app.get('/todos', function(inpt, out) {
 });
 //get method and geting the var id
 app.get("/todos/:id", function(inpt, out) {
-    out.send('these is id of ' + inpt.params.id);
+    /*
+    If the radix parameter is omitted, JavaScript assumes the following:
+
+    If the string begins with "0x", the radix is 16 (hexadecimal)
+    If the string begins with "0", the radix is 8 (octal). This feature is deprecated
+    If the string begins with any other value, the radix is 10 (decimal)
+    */
+
+    var id = parseInt(inpt.params.id, 10);
+
+    for (var i = 0; i < todos.length; i++) {
+        if (todos[i].id === id) {
+            var x = i;
+        }
+    }
+    if (typeof x === 'undefined') {
+        out.sendStatus(404);
+
+    } else {
+        out.json(todos[x]);
+    }
 });
 app.listen(port, function() {
     console.log('app runing in port ' + port);

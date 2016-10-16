@@ -21,7 +21,7 @@ var todos = [{
 app.get('/', function(input, output) {
     output.send('the app is runing !!!');
 });
-app.get('/todos', function( in , out) {
+app.get('/todos', function(inpt, out) {
     out.json(todos);
 });
 

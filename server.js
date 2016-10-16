@@ -24,7 +24,10 @@ app.get('/', function(input, output) {
 app.get('/todos', function(inpt, out) {
     out.json(todos);
 });
-
+//get method and geting the var id
+app.get("/todos/:id", function(inpt, out) {
+    out.send('these is id of ' + inpt.perams.id);
+});
 app.listen(port, function() {
     console.log('app runing in port ' + port);
 

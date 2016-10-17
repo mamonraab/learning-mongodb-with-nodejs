@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 //working with post request
 app.post('/todos' , function(reqst , respnd){
 var body = reqst.body;
+    body.id = todoNextId++;
+    todos.push(body);
     console.log('description');
     respnd.json(body);
 });

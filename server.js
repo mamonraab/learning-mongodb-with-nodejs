@@ -1,22 +1,19 @@
 var web = require('express');
-
+var bodyParser = require('body-parser'); //geting the medileware that parse the post
 var app = web();
 var port = process.env.PORT || 3000;
-var todos = [{
-    id: 1,
-    descreption: "do mesha job",
-    complated: false
-}, {
-    id: 2,
-    descreption: "do nada job",
-    complated: false
+var todos = [];
+var todoNextId =1;
 
-}, {
-    id: 3,
-    descreption: "to mamon job",
-    complated: true
+//use the meddileware bodyparser
+app.use(bodyParser.json());
+//working with post request
+app.post('/todos' , function(reqst , respnd){
+var body = rqst.body;
+    console.log('description');
+    respnd.json(body);
+});
 
-}];
 
 app.get('/', function(input, output) {
     output.send('the app is runing !!!');

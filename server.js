@@ -9,7 +9,7 @@ var todoNextId =1;
 app.use(bodyParser.json());
 //working with post request
 app.post('/todos' , function(reqst , respnd){
-var body = rqst.body;
+var body = reqst.body;
     console.log('description');
     respnd.json(body);
 });

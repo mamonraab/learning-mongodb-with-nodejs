@@ -38,7 +38,7 @@ app.get("/todos/:id", function(inpt, out) {
 
     var toid = parseInt(inpt.params.id, 10);
 
-    var x = _.findWhere(todos, id: toid);
+    var x = _.findWhere(todos, id, toid);
 
     /*
         for (var i = 0; i < todos.length; i++) {

@@ -13,8 +13,19 @@ app.use(bodyParser.json());
 //working with post request
 app.post('/todos', function(reqst, respnd) {
     var body = reqst.body;
+
+    if (!_.isBoolean(body.complated) || !_.isString(body.descrption) || body.descrption.trim().length == 0) {
+
+        return respnd.sendStatus(404);
+    }
+
     body.id = todoNextId++;
-    todos.push(body);
+    var x = {
+        id: body.id,
+        descrption: body.descrption,
+        complated: body.complated
+    };
+    todos.push(x);
     console.log('description');
     respnd.json(body);
 });
@@ -38,7 +49,7 @@ app.get("/todos/:id", function(inpt, out) {
 
     var toid = parseInt(inpt.params.id, 10);
 
-    var x = _.findWhere(todos, id, toid);
+    var x = _.findWhere(todos, { id: toid });
 
     /*
         for (var i = 0; i < todos.length; i++) {
@@ -47,11 +58,11 @@ app.get("/todos/:id", function(inpt, out) {
             }
         }
       */
-    if (typeof x === 'undefined') {
+    if (!x) {
         out.sendStatus(404);
 
     } else {
-        out.json(todos[x]);
+        out.json(x);
     }
 });
 app.listen(port, function() {

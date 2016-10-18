@@ -1,6 +1,9 @@
 var web = require('express');
-var bodyParser = require('body-parser');
-//geting the medileware that parse the post
+var bodyParser = require('body-parser'); //geting the medileware that parse the post
+
+//using underscore labrry
+var _ = require('underscore');
+
 var app = web();
 var port = process.env.PORT || 3000;
 var todos = [];
@@ -33,13 +36,17 @@ app.get("/todos/:id", function(inpt, out) {
                    If the string begins with any other value, the radix is 10 (decimal)
     */
 
-    var id = parseInt(inpt.params.id, 10);
+    var toid = parseInt(inpt.params.id, 10);
 
-    for (var i = 0; i < todos.length; i++) {
-        if (todos[i].id === id) {
-            var x = i;
+    var x = _.findWhere(todos, id: toid);
+
+    /*
+        for (var i = 0; i < todos.length; i++) {
+            if (todos[i].id === id) {
+                var x = i;
+            }
         }
-    }
+      */
     if (typeof x === 'undefined') {
         out.sendStatus(404);
 

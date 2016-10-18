@@ -1,24 +1,15 @@
 var web = require('express');
-var bodyParser = require('body-parser'); //geting the medileware that parse the post
+var bodyParser = require('body-parser');
+//geting the medileware that parse the post
 var app = web();
 var port = process.env.PORT || 3000;
 var todos = [];
-<<<<<<< HEAD
 var todoNextId = 1;
-=======
-var todoNextId =1;
->>>>>>> 7e58abe35eb9097a716811a19345a33316ca74c1
-
 //use the meddileware bodyparser
 app.use(bodyParser.json());
 //working with post request
-<<<<<<< HEAD
 app.post('/todos', function(reqst, respnd) {
     var body = reqst.body;
-=======
-app.post('/todos' , function(reqst , respnd){
-var body = reqst.body;
->>>>>>> 7e58abe35eb9097a716811a19345a33316ca74c1
     body.id = todoNextId++;
     todos.push(body);
     console.log('description');
@@ -35,11 +26,11 @@ app.get('/todos', function(inpt, out) {
 //get method and geting the var id
 app.get("/todos/:id", function(inpt, out) {
     /*
-    If the radix parameter is omitted, JavaScript assumes the following:
+                   If the radix parameter is omitted, JavaScript assumes the following:
 
-    If the string begins with "0x", the radix is 16 (hexadecimal)
-    If the string begins with "0", the radix is 8 (octal). This feature is deprecated
-    If the string begins with any other value, the radix is 10 (decimal)
+                   If the string begins with "0x", the radix is 16 (hexadecimal)
+                   If the string begins with "0", the radix is 8 (octal). This feature is deprecated
+                   If the string begins with any other value, the radix is 10 (decimal)
     */
 
     var id = parseInt(inpt.params.id, 10);
@@ -58,5 +49,4 @@ app.get("/todos/:id", function(inpt, out) {
 });
 app.listen(port, function() {
     console.log('app runing in port ' + port);
-
 });

@@ -3,13 +3,22 @@ var bodyParser = require('body-parser'); //geting the medileware that parse the 
 var app = web();
 var port = process.env.PORT || 3000;
 var todos = [];
+<<<<<<< HEAD
 var todoNextId = 1;
+=======
+var todoNextId =1;
+>>>>>>> 7e58abe35eb9097a716811a19345a33316ca74c1
 
 //use the meddileware bodyparser
 app.use(bodyParser.json());
 //working with post request
+<<<<<<< HEAD
 app.post('/todos', function(reqst, respnd) {
     var body = reqst.body;
+=======
+app.post('/todos' , function(reqst , respnd){
+var body = reqst.body;
+>>>>>>> 7e58abe35eb9097a716811a19345a33316ca74c1
     body.id = todoNextId++;
     todos.push(body);
     console.log('description');

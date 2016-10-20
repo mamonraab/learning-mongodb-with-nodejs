@@ -20,6 +20,7 @@ app.post('/todos', function(reqst, respnd) {
     }
 
     body.id = todoNextId++;
+	body.descrption = body.descrption.trim();
     todos.push(body);
     console.log('description');
     respnd.json(body);

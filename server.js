@@ -12,7 +12,7 @@ var todoNextId = 1;
 app.use(bodyParser.json());
 //working with post request
 app.post('/todos', function(reqst, respnd) {
-    var body = reqst.body;
+    var body = _.pick(reqst.body,'descrption','complated');
 
     if (!_.isBoolean(body.complated) || !_.isString(body.descrption) || body.descrption.trim().length == 0) {
 
@@ -20,12 +20,7 @@ app.post('/todos', function(reqst, respnd) {
     }
 
     body.id = todoNextId++;
-    var x = {
-        id: body.id,
-        descrption: body.descrption,
-        complated: body.complated
-    };
-    todos.push(x);
+    todos.push(body);
     console.log('description');
     respnd.json(body);
 });

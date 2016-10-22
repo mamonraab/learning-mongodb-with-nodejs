@@ -75,30 +75,31 @@ app.delete('/todos/:id', function(req, res) {
 });
 // put requist for updating  item
 app.put('/todos/:id', function(req, res) {
-    var todoId = parseInt(req.params.id, 10);
-    var matchedTodo = _.findWhere(todos, { id: todoId });
-    var body = _.pick(req.body, 'description', 'completed');
-    var validAttributes = {};
+            var todoId = parseInt(req.params.id, 10);
+            var matchedTodo = _.findWhere(todos, { id: todoId });
+            if (!_.isBoolean(body.complated) || !_.isString(body.descrption) || body.descrption.trim().length == 0) {
 
-    if (!matchedTodo) {
-        return res.status(404).send();
-    }
+                var body = _.pick(req.body, 'descrption', 'complated');
+                var validAttributes = {};
 
-    if (body.hasOwnProperty('completed') && _.isBoolean(body.completed)) {
-        validAttributes.completed = body.completed;
-    } else if (body.hasOwnProperty('completed')) {
-        return res.status(400).send();
-    }
+                if (!matchedTodo) {
+                    return res.status(404).send();
+                }
 
-    if (body.hasOwnProperty('description') && _.isString(body.description) && body.description.trim().length > 0) {
-        validAttributes.description = body.description;
-    } else if (body.hasOwnProperty('description')) {
-        return res.status(400).send();
-    }
+                if (body.hasOwnProperty('complated') && _.isBoolean(body.complated)) {
+                    validAttributes.complated = body.complated;
+                } else if (body.hasOwnProperty('complated')) {
+                    return res.status(400).send();
+                }
 
-    _.extend(matchedTodo, validAttributes);
-    res.json(matchedTodo);
-});
-app.listen(port, function() {
-    console.log('app runing in port ' + port);
-});
+                if (body.hasOwnProperty('descrption') && _.isString(body.descrption) && body.descrption.trim().length > 0) {
+                    validAttributes.descrption = body.descrption;
+                } else if (body.hasOwnProperty('descrption')) {
+                    return res.status(400).send();
+                }
+
+                _.extend(matchedTodo, validAttributes);
+                res.json(matchedTodo);
+            }); app.listen(port, function() {
+            console.log('app runing in port ' + port);
+        });

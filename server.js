@@ -12,7 +12,7 @@ var todoNextId = 1;
 app.use(bodyParser.json());
 //working with post request
 app.post('/todos', function(reqst, respnd) {
-    var body = _.pick(reqst.body,'descrption','complated');
+    var body = _.pick(reqst.body, 'descrption', 'complated');
 
     if (!_.isBoolean(body.complated) || !_.isString(body.descrption) || body.descrption.trim().length == 0) {
 
@@ -20,7 +20,7 @@ app.post('/todos', function(reqst, respnd) {
     }
 
     body.id = todoNextId++;
-	body.descrption = body.descrption.trim();
+    body.descrption = body.descrption.trim();
     todos.push(body);
     console.log('description');
     respnd.json(body);
@@ -59,6 +59,18 @@ app.get("/todos/:id", function(inpt, out) {
 
     } else {
         out.json(x);
+    }
+});
+
+//delete request
+app.delete('/todos/:id', function(req, res) {
+    var toid = parseInt(req.params.id, 10);
+    var item = _.findWhere(todos, { id: toid });
+    if (!item) {
+        return res.status(404).json({ 'error': "item not found" });
+    } else {
+        todos = _.without(todos, item);
+        res.json(item);
     }
 });
 app.listen(port, function() {

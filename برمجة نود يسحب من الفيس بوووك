@@ -1,8 +1,17 @@
+
+https://developers.facebook.com/docs/facebook-login/access-tokens/#apptokens
+
 https://github.com/jaredhanson/passport-facebook
+
+
 
 202409816773047?fields=feed.limit(10){full_picture,message,created_time}
 
 https://developers.facebook.com/tools/explorer?method=GET&path=202409816773047%3Ffields%3Dfeed.limit(10)%7Bfull_picture%2Cmessage%2Ccreated_time%7D&version=v2.8
+
+
+https://graph.facebook.com/oauth/access_token?client_id=APP_ID&client_secret=APP_SECRET&grant_type=client_credentials
+
 
 https://smashballoon.com/custom-facebook-feed/access-token/
 

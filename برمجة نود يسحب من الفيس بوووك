@@ -1,0 +1,11 @@
+https://github.com/jaredhanson/passport-facebook
+
+202409816773047?fields=feed.limit(10){full_picture,message,created_time}
+
+https://developers.facebook.com/tools/explorer?method=GET&path=202409816773047%3Ffields%3Dfeed.limit(10)%7Bfull_picture%2Cmessage%2Ccreated_time%7D&version=v2.8
+
+https://smashballoon.com/custom-facebook-feed/access-token/
+
+http://callmenick.com/post/displaying-a-custom-facebook-page-feed
+
+https://code.tutsplus.com/tutorials/build-your-first-facebook-app--net-471

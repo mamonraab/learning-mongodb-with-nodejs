@@ -31,7 +31,27 @@ app.get('/', function(input, output) {
     output.send('the app is runing !!!');
 });
 app.get('/todos', function(inpt, out) {
-    out.json(todos);
+    var flitered = todos;
+    var qury = inpt.query;
+    if (qury.hasOwnProperty('complated') && qury.complated === 'true') {
+
+        flitered = _.where(flitered, { complated: true });
+    }
+    if (qury.hasOwnProperty('complated') && qury.complated === 'false') {
+
+        flitered = _.where(flitered, { complated: false });
+
+    }
+    if (qury.hasOwnProperty('q')) {
+
+
+        flitered = _.filter(flitered, function(item) {
+            return item.descrption.toLowerCase().indexOf(qury.q) > -1;
+        });
+
+
+    }
+    out.json(flitered);
 });
 //get method and geting the var id
 app.get("/todos/:id", function(inpt, out) {

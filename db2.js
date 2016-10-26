@@ -4,7 +4,7 @@ var state = {
   db: null,
 };
 
-exports.connectd = function(url) {
+function connectd(url) {
 
 return new Promise(function (fulfill , reject){
   if (state.db) {
@@ -28,6 +28,20 @@ reject(err);
 
 });
 
+};
+
+
+
+exports.getdb  = function (url){
+connectd(url).then(function(result){
+console.log('conacted');
+  return result;
+},
+  function(err){
+    console.log('Unable to connect to Mongo.');
+    process.exit(1);
+  }
+);
 };
 
 

@@ -1,9 +1,8 @@
 var express = require('express');
 var app = express();
 var tododb = require('./db2');
-var assert = require('assert');
-var ObjectId = require('mongodb').ObjectID;
-var url = 'mongodb://localhost:27017/tododb';
+
+
 
 // Connect to Mongo on start
 /*
@@ -21,7 +20,7 @@ console.log('conacted');
 //insert one decumnt its mean one row in the rable called restaurants and  collection is mean table
 
 var insertDocument = function(db, callback) {
-    tododb.getdb(url).collection('restaurants').insertOne({
+    db.collection('restaurants').insertOne({
         "address": {
             "street": "2 Avenue",
             "zipcode": "10075",
@@ -51,9 +50,25 @@ var insertDocument = function(db, callback) {
 };
 
 // call function and insert
+console.log('inseart data =====================================');
+insertDocument(tododb.dbcon, function() {
+    //  tododb.close();
+});
 
-    console.log('inseart data =====================================');
+// call function and insert
+console.log('inseart data =====================================');
+insertDocument(tododb.dbcon, function() {
+    //  tododb.close();
+});
 
-    insertDocument(tododb.getdb(url), function() {
-      //  tododb.close();
-    });
+// call function and insert
+console.log('inseart data =====================================');
+insertDocument(tododb.dbcon, function() {
+    //  tododb.close();
+});
+
+// call function and insert
+console.log('inseart data =====================================');
+insertDocument(tododb.dbcon, function() {
+    //  tododb.close();
+});

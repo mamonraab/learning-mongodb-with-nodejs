@@ -1,56 +1,45 @@
 var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var ObjectId = require('mongodb').ObjectID;
+var url = 'mongodb://localhost:27017/tododb';
 
-var state = {
-  db: null,
-};
+var dbcon = undefined;
 
 function connectd(url) {
+    console.log(typeof dbcon);
+    return new Promise(function(fulfill, reject) {
+        if (dbcon) {
+            console.log('iam using already exist conaction');
+            fulfill(dbcon);
+        } else {
 
-return new Promise(function (fulfill , reject){
-  if (state.db) {
-    fulfill(state.db);
-  } else {
+
+            MongoClient.connect(url, function(err, db) {
+                if (err) {
+                    reject(err);
+                } else {
+                    console.log('iam opining new  conaction');
+
+                    dbcon = db;
+                    fulfill(dbcon);
+
+                }
+            });
 
 
-    MongoClient.connect(url, function(err, db) {
-      if (err) {
-reject(err);
-      } else {
-          state.db = db;
-          fulfill(state.db);
 
+        }
+
+    });
+
+};
+
+connectd(url).then(function(result) {
+        module.exports = dbcon;
+        console.log('conacted !!');
+    },
+    function(err) {
+        console.log('Unable to connect to Mongo.');
+        process.exit(1);
     }
-  });
-
-
-
-  }
-
-});
-
-};
-
-
-
-exports.getdb  = function (url){
-connectd(url).then(function(result){
-console.log('conacted');
-  return result;
-},
-  function(err){
-    console.log('Unable to connect to Mongo.');
-    process.exit(1);
-  }
 );
-};
-
-
-exports.close = function(done) {
-  if (state.db) {
-    state.db.close(function(err, result) {
-      state.db = null
-      state.mode = null
-      done(err)
-    })
-  }
-};

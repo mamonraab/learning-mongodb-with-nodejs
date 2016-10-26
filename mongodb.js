@@ -1,6 +1,6 @@
 // geting monogodb libriry
 var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
+//var assert = require('assert');
 //neded for insertion and finde
 var ObjectId = require('mongodb').ObjectID;
 
@@ -10,10 +10,13 @@ var url = 'mongodb://localhost:27017/test';
 //make connaction
 
 MongoClient.connect(url, function(err, db) {
+  if (err){
     assert.equal(null, err);
-    console.log('connection secceesfully');
-    db.close();
 
+}  else {
+  console.log('connection secceesfully');
+  db.close();
+}
 });
 
 //insert one decumnt its mean one row in the rable called restaurants and  collection is mean table

@@ -16,7 +16,7 @@ Note
 Follow this step ONLY if you are running Ubuntu 16.04.
 
 Create a new file at /lib/systemd/system/mongod.service with the following contents:
-
+sudo nano /etc/systemd/system/mongodb.service
 [Unit]
 Description=High-performance, schema-free document-oriented database
 After=network.target
@@ -32,7 +32,7 @@ WantedBy=multi-user.target
 
 
 
-
+sudo systemctl start mongodb
 ======
 sudo service mongod start
 Verify that the mongod process has started successfully by checking the contents of the log file at /var/log/mongodb/mongod.log for a line reading
@@ -46,3 +46,5 @@ npm install mongodb --save
 
 ======================
 استخدام المونجو
+لاتستخدم نفس المتغير في الادخال اكثر من مرة لانه سيرفض بغض النضر عن الداتا الحاوي فيها فالمونجو تعطي ايدي على وقت انشاء المتغير
+

@@ -1,74 +1,57 @@
 var express = require('express');
 var app = express();
 var tododb = require('./db2');
-
-
-
-// Connect to Mongo on start
-/*
-var nosqol = tododb.connectd(url).then(function(result){
-console.log('conacted');
-  return result;
-},
-  function(err){
-    console.log('Unable to connect to Mongo.');
-    process.exit(1);
+var ObjectId = require('mongodb').ObjectID;
+var assert = require('assert');
+var url = 'mongodb://localhost:27017/tododb';
+var data = {
+  name:{
+    fname:'mamon',
+    mname:'rasool',
+    lname:'abdali'
+  },
+  age:31,
+  grid:{
+    math:90, arabic:98
   }
-);
-
-*/
-//insert one decumnt its mean one row in the rable called restaurants and  collection is mean table
-
-var insertDocument = function(db, callback) {
-    db.collection('restaurants').insertOne({
-        "address": {
-            "street": "2 Avenue",
-            "zipcode": "10075",
-            "building": "1480",
-            "coord": [-73.9557413, 40.7720266]
-        },
-        "borough": "Manhattan",
-        "cuisine": "Italian",
-        "grades": [{
-                "date": new Date("2014-10-01T00:00:00Z"),
-                "grade": "A",
-                "score": 11
-            },
-            {
-                "date": new Date("2014-01-16T00:00:00Z"),
-                "grade": "B",
-                "score": 17
-            }
-        ],
-        "name": "Vella",
-        "restaurant_id": "41704620"
-    }, function(err, result) {
-        assert.equal(err, null);
-        console.log("Inserted a document into the restaurants collection.");
-        callback();
-    });
 };
 
-// call function and insert
-console.log('inseart data =====================================');
-insertDocument(tododb.dbcon, function() {
-    //  tododb.close();
+var data2 = {
+  name:{
+    fname:'mamon',
+    mname:'rasool',
+    lname:'abdali'
+  },
+  age:31,
+  grid:{
+    math:90, arabic:98
+  }
+};
+
+tododb.connectd(url).then(function(result) {
+
+         console.log('conacted !!');
+         // Create a new ObjectID
+
+         var col = result.collection('insert_many');
+         col.insertMany([data, data2], function(err, r) {
+           assert.equal(null, err);
+           console.log(r.insertedCount);
+
+           assert.equal(2, r.insertedCount);
 });
 
-// call function and insert
-console.log('inseart data =====================================');
-insertDocument(tododb.dbcon, function() {
-    //  tododb.close();
-});
+tododb.insertDocument(result , function(x){
 
-// call function and insert
-console.log('inseart data =====================================');
-insertDocument(tododb.dbcon, function() {
-    //  tododb.close();
-});
+console.log(x);
+},data);
+tododb.insertDocument(result , function(x){
 
-// call function and insert
-console.log('inseart data =====================================');
-insertDocument(tododb.dbcon, function() {
-    //  tododb.close();
-});
+console.log(x);
+},data2);
+},
+function(err) {
+    console.log('Unable to connect to Mongo.');
+    process.exit(1);
+}
+);

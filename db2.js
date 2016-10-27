@@ -5,7 +5,7 @@ var url = 'mongodb://localhost:27017/tododb';
 
 var dbcon = undefined;
 
-function connectd(url) {
+exports.connectd = function(url) {
     console.log(typeof dbcon);
     return new Promise(function(fulfill, reject) {
         if (dbcon) {
@@ -34,12 +34,25 @@ function connectd(url) {
 
 };
 
-connectd(url).then(function(result) {
-        module.exports = dbcon;
-        console.log('conacted !!');
-    },
-    function(err) {
-        console.log('Unable to connect to Mongo.');
-        process.exit(1);
-    }
-);
+
+
+// inster data
+
+exports.insertDocument = function(db, callback , data) {
+    db.collection('restaurants').insertOne(data, function(err, result) {
+        assert.equal(err, null);
+        console.log("Inserted a document into the restaurants collection.");
+        callback();
+    });
+};
+
+
+
+
+exports.manyinsert = function(db , callback , data){
+  db.collection('restaurants').insertMany([data,data ,data ,data ,data], function(err, result) {
+      assert.equal(err, null);
+      console.log(result.insertedCount);
+      callback('Inserted a document into the restaurants collection.' + result.insertedCount);
+  });
+};

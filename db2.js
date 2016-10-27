@@ -70,15 +70,15 @@ exports.manyinsert = function(url, callback , data){
 };
 
 
-exports.findm = function(url, callback , id) {
-var data=[];
+
+
+
+
+exports.getUsersByCity = function(city, cb ,url) {
   MongoClient.connect(url, function(err, db) {
-     db.collection('restaurants').find({},{},function(e,docs){
-       data.push(doc);
 
-    });
-    callback(data);
-    db.close();
-  });
+db.collection('restaurants').find({}).toArray(cb);
 
-};
+});
+
+}

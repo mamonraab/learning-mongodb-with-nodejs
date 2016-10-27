@@ -34,22 +34,23 @@ var data2 = {
 };
 
 
-tododb.insertDocument(url , function(x){
-
-console.log(x);
-},data);
-tododb.insertDocument(url , function(x){
-
-console.log(x);
-},data2);
-
 
 app.get('/todo/:id',function(req , res){
 
    var id= req.params.id;
-  tododb.findm(url , function(q){
-res.send(q);
-  },id );
+
+   tododb.getUsersByCity(id, function(err, data){
+       if (err) {
+           console.log(err);
+           return res(err);
+       } else {
+           console.log(data);
+           return res.json(data);
+       }
+   },url);
+
+
+
 /*
   router.get('/userlist', function(req, res) {
     var db = req.db;

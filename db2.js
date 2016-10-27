@@ -38,21 +38,47 @@ exports.connectd = function(url) {
 
 // inster data
 
-exports.insertDocument = function(db, callback , data) {
+exports.insertDocument = function(url, callback , data) {
+
+  MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    console.log("Connected correctly to server.");
     db.collection('restaurants').insertOne(data, function(err, result) {
         assert.equal(err, null);
         console.log("Inserted a document into the restaurants collection.");
-        callback();
+        callback("Inserted a document into the restaurants collection.");
     });
+    db.close();
+  });
 };
 
 
 
 
-exports.manyinsert = function(db , callback , data){
-  db.collection('restaurants').insertMany([data,data ,data ,data ,data], function(err, result) {
-      assert.equal(err, null);
-      console.log(result.insertedCount);
-      callback('Inserted a document into the restaurants collection.' + result.insertedCount);
+exports.manyinsert = function(url, callback , data){
+
+  MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    console.log("Connected correctly to server.");
+    db.collection('restaurants').insertMany([data,data ,data ,data ,data], function(err, result) {
+        assert.equal(err, null);
+        console.log(result.insertedCount);
+        callback('Inserted a document into the restaurants collection.' + result.insertedCount);
+    });
+    db.close();
   });
+};
+
+
+exports.findm = function(url, callback , id) {
+var data=[];
+  MongoClient.connect(url, function(err, db) {
+     db.collection('restaurants').find({},{},function(e,docs){
+       data.push(doc);
+
+    });
+    callback(data);
+    db.close();
+  });
+
 };

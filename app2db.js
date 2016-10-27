@@ -3,6 +3,11 @@ var app = express();
 var tododb = require('./db2');
 var ObjectId = require('mongodb').ObjectID;
 var assert = require('assert');
+var bodyParser = require('body-parser'); //geting the medileware that parse the post
+var port = process.env.PORT || 3000;
+
+//using underscore labrry
+var _ = require('underscore');
 var url = 'mongodb://localhost:27017/tododb';
 var data = {
   name:{
@@ -28,30 +33,37 @@ var data2 = {
   }
 };
 
-tododb.connectd(url).then(function(result) {
 
-         console.log('conacted !!');
-         // Create a new ObjectID
-
-         var col = result.collection('insert_many');
-         col.insertMany([data, data2], function(err, r) {
-           assert.equal(null, err);
-           console.log(r.insertedCount);
-
-           assert.equal(2, r.insertedCount);
-});
-
-tododb.insertDocument(result , function(x){
+tododb.insertDocument(url , function(x){
 
 console.log(x);
 },data);
-tododb.insertDocument(result , function(x){
+tododb.insertDocument(url , function(x){
 
 console.log(x);
 },data2);
-},
-function(err) {
-    console.log('Unable to connect to Mongo.');
-    process.exit(1);
-}
-);
+
+
+app.get('/todo/:id',function(req , res){
+
+   var id= req.params.id;
+  tododb.findm(url , function(q){
+res.send(q);
+  },id );
+/*
+  router.get('/userlist', function(req, res) {
+    var db = req.db;
+    var collection = db.get('usercollection');
+    collection.find({},{},function(e,docs){
+        res.render('userlist', {
+            "userlist" : docs
+        });
+    });
+});
+*/
+});
+
+
+app.listen(port, function() {
+    console.log('app runing in port ' + port);
+});

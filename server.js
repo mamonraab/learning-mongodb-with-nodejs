@@ -3,11 +3,13 @@ var bodyParser = require('body-parser'); //geting the medileware that parse the 
 
 //using underscore labrry
 var _ = require('underscore');
-
+var tododb = require('./db');
 var app = web();
 var port = process.env.PORT || 3000;
 var todos = [];
-var todoNextId = 1;
+var DB = {};
+var url = MONGODB_URI || 'mongodb://localhost:27017/tododb';
+
 //use the meddileware bodyparser
 app.use(bodyParser.json());
 //working with post request
@@ -19,11 +21,14 @@ app.post('/todos', function(reqst, respnd) {
         return respnd.sendStatus(404);
     }
 
-    body.id = todoNextId++;
     body.descrption = body.descrption.trim();
-    todos.push(body);
+
+
+    tododb.insertDocument(DB, function(back) {
+        respnd.send(back);
+    }, body);
     console.log('description');
-    respnd.json(body);
+
 });
 
 
@@ -31,27 +36,33 @@ app.get('/', function(input, output) {
     output.send('the app is runing !!!');
 });
 app.get('/todos', function(inpt, out) {
-    var flitered = todos;
+
     var qury = inpt.query;
+    var fliter;
     if (qury.hasOwnProperty('complated') && qury.complated === 'true') {
 
-        flitered = _.where(flitered, { complated: true });
+        fliter = { complated: true };
     }
     if (qury.hasOwnProperty('complated') && qury.complated === 'false') {
 
-        flitered = _.where(flitered, { complated: false });
+        fliter = { complated: false };
 
     }
     if (qury.hasOwnProperty('q')) {
 
 
-        flitered = _.filter(flitered, function(item) {
-            return item.descrption.toLowerCase().indexOf(qury.q) > -1;
-        });
+        fliter = {};
 
 
     }
-    out.json(flitered);
+    tododb.getAll(fliter, function(err, data) {
+        if (err) {
+            console.log(err);
+            return out.send(err);
+        } else {
+            return out.json(data);
+        }
+    }, DB);
 });
 //get method and geting the var id
 app.get("/todos/:id", function(inpt, out) {
@@ -62,10 +73,19 @@ app.get("/todos/:id", function(inpt, out) {
                    If the string begins with "0", the radix is 8 (octal). This feature is deprecated
                    If the string begins with any other value, the radix is 10 (decimal)
     */
+    var id = inpt.params.id;
 
-    var toid = parseInt(inpt.params.id, 10);
+    tododb.getById(id, function(err, data) {
+        if (err) {
+            console.log(err);
+            return out.send(err);
+        } else {
+            return out.json(data);
+        }
+    }, DB);
+    //  var toid = parseInt(inpt.params.id, 10);
 
-    var x = _.findWhere(todos, { id: toid });
+    //var x = _.findWhere(todos, { id: toid });
 
     /*
         for (var i = 0; i < todos.length; i++) {
@@ -74,12 +94,14 @@ app.get("/todos/:id", function(inpt, out) {
             }
         }
       */
-    if (!x) {
+    /*if (!x) {
         out.sendStatus(404);
 
     } else {
         out.json(x);
     }
+*/
+
 });
 
 //delete request
@@ -121,6 +143,16 @@ app.put('/todos/:id', function(req, res) {
     res.json(matchedTodo);
 });
 
-app.listen(port, function() {
-    console.log('app runing in port ' + port);
+tododb.connectd(url).then(function(dbcon) {
+    DB = dbcon;
+    app.listen(port, function() {
+        console.log('app runing in port ' + port);
+    });
+
+
+
+}, function(error) {
+
+    console.log('Unable to connect to Mongo.');
+    process.exit(1);
 });

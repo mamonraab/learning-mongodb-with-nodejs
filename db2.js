@@ -1,7 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
-var url = 'mongodb://localhost:27017/tododb';
 
 var dbcon = undefined;
 
@@ -38,35 +37,29 @@ exports.connectd = function(url) {
 
 // inster data
 
-exports.insertDocument = function(url, callback , data) {
+exports.insertDocument = function(db, callback, data) {
 
-  MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-    console.log("Connected correctly to server.");
+
     db.collection('restaurants').insertOne(data, function(err, result) {
         assert.equal(err, null);
         console.log("Inserted a document into the restaurants collection.");
         callback("Inserted a document into the restaurants collection.");
     });
-    db.close();
-  });
+
 };
 
 
 
 
-exports.manyinsert = function(url, callback , data){
+exports.manyinsert = function(db, callback, data) {
 
-  MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-    console.log("Connected correctly to server.");
-    db.collection('restaurants').insertMany([data,data ,data ,data ,data], function(err, result) {
+
+    db.collection('restaurants').insertMany([data, data, data, data, data], function(err, result) {
         assert.equal(err, null);
         console.log(result.insertedCount);
         callback('Inserted a document into the restaurants collection.' + result.insertedCount);
     });
-    db.close();
-  });
+
 };
 
 
@@ -74,11 +67,14 @@ exports.manyinsert = function(url, callback , data){
 
 
 
-exports.getUsersByCity = function(city, cb ,url) {
-  MongoClient.connect(url, function(err, db) {
+exports.getById = function(id, cb, db) {
 
-db.collection('restaurants').find({}).toArray(cb);
+    if (ObjectId(id)) {
+        var id2 = ObjectId(id);
+        console.log('ok');
+        db.collection('restaurants').find({ "_id": id2 }).toArray(cb);
+    } else {
+        console.log('errror ');
+    }
 
-});
-
-}
+};

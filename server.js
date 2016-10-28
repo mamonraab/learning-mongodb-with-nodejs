@@ -8,7 +8,7 @@ var app = web();
 var port = process.env.PORT || 3000;
 var todos = [];
 var DB = {};
-var url = 'mongodb://heroku_rd65r5gk:vfpao65e9r05o2tipaheiqslqj@ds137197.mlab.com:37197/heroku_rd65r5gk'; // || 'mongodb://localhost:27017/tododb';
+var url = process.env.MONGODB_URI || 'mongodb://localhost:27017/tododb';
 
 //use the meddileware bodyparser
 app.use(bodyParser.json());

@@ -87,3 +87,25 @@ exports.getAll = function(ob, cb, db) {
 
 
 };
+
+exports.del = function(db, id) {
+
+    return new Promise(function(fulfill, reject) {
+
+        var id2 = ObjectId(id);
+
+        db.collection('restaurants').deleteOne({ "_id": id2 },
+            function(err, results) {
+                if (err) {
+                    reject(err);
+                } else {
+                    fulfill(results);
+                }
+
+            }
+        );
+
+
+    });
+
+};

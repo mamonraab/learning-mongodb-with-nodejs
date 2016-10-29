@@ -106,14 +106,22 @@ app.get("/todos/:id", function(inpt, out) {
 
 //delete request
 app.delete('/todos/:id', function(req, res) {
-    var toid = parseInt(req.params.id, 10);
-    var item = _.findWhere(todos, { id: toid });
-    if (!item) {
-        return res.status(404).json({ 'error': "item not found" });
-    } else {
-        todos = _.without(todos, item);
-        res.json(item);
-    }
+
+    tododb.del(DB, req.params.id).then(function(ok) {
+        res.send(ok);
+    }, function(error) {
+        res.status(404).json({ 'error': "item not found" });
+
+
+    });
+    /*  var toid = parseInt(req.params.id, 10);
+      var item = _.findWhere(todos, { id: toid });
+      if (!item) {
+          return res.status(404).json({ 'error': "item not found" });
+      } else {
+          todos = _.without(todos, item);
+          res.json(item);
+      }*/
 });
 // put requist for updating  item
 app.put('/todos/:id', function(req, res) {

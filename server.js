@@ -110,14 +110,14 @@ app.delete('/todos/:id', function(req, res) {
     tododb.del(DB, req.params.id).then(function(ok) {
 
         if (ok.n > 0) {
-            res.json({ 'delete': 'ok' });
+            res.json(ok);
 
         } else {
             res.status(404).json({ 'error': "item not found" });
 
         }
 
-        res.send(ok);
+
     }, function(error) {
         res.status(404).json({ 'error': "item not found" });
 
@@ -134,15 +134,9 @@ app.delete('/todos/:id', function(req, res) {
 });
 // put requist for updating  item
 app.put('/todos/:id', function(req, res) {
-    var todoId = parseInt(req.params.id, 10);
-    var matchedTodo = _.findWhere(todos, { id: todoId });
 
     var body = _.pick(req.body, 'descrption', 'complated');
     var validAttributes = {};
-
-    if (!matchedTodo) {
-        return res.status(404).send();
-    }
 
     if (body.hasOwnProperty('complated') && _.isBoolean(body.complated)) {
         validAttributes.complated = body.complated;
@@ -156,8 +150,22 @@ app.put('/todos/:id', function(req, res) {
         return res.status(400).send();
     }
 
-    _.extend(matchedTodo, validAttributes);
-    res.json(matchedTodo);
+    tododb.updateId(DB, validAttributes, req.params.id).then(function(ok) {
+        res.json(ok);
+
+        if (ok.n > 0) {
+            res.json(ok);
+
+        } else {
+            res.status(404).json({ 'error': "item not found" });
+
+        }
+
+
+    }, function(error) {
+        res.status(404).json({ 'error': "item not found" });
+    });
+
 });
 
 tododb.connectd(url).then(function(dbcon) {

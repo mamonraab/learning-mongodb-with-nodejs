@@ -87,7 +87,30 @@ exports.getAll = function(ob, cb, db) {
 
 
 };
+exports.updateId = function(db, newvlu, id) {
 
+    return new Promise(function(fulfill, reject) {
+
+        var id2 = ObjectId(id);
+
+
+        db.collection('restaurants').updateOne({ "_id": id2 }, { $set: newvlu },
+            function(err, results) {
+
+                if (err) {
+                    reject(err);
+                } else {
+                    fulfill(results.result);
+                }
+
+
+            });
+
+    });
+
+
+
+};
 exports.del = function(db, id) {
 
     return new Promise(function(fulfill, reject) {

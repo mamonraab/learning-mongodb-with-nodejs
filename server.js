@@ -108,6 +108,15 @@ app.get("/todos/:id", function(inpt, out) {
 app.delete('/todos/:id', function(req, res) {
 
     tododb.del(DB, req.params.id).then(function(ok) {
+
+        if (ok.n > 0) {
+            res.json({ 'delete': 'ok' });
+
+        } else {
+            res.status(404).json({ 'error': "item not found" });
+
+        }
+
         res.send(ok);
     }, function(error) {
         res.status(404).json({ 'error': "item not found" });

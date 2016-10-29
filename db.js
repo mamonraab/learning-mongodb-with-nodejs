@@ -99,7 +99,8 @@ exports.del = function(db, id) {
                 if (err) {
                     reject(err);
                 } else {
-                    fulfill(results);
+                    console.log(results.result);
+                    fulfill(results.result);
                 }
 
             }

@@ -26,7 +26,7 @@ app.post('/todos', function(reqst, respnd) {
 
     tododb.insertDocument(DB, function(back) {
         respnd.send(back);
-    }, body);
+    }, body , 'restaurants');
     console.log('description');
 
 });
@@ -62,7 +62,7 @@ app.get('/todos', function(inpt, out) {
         } else {
             return out.json(data);
         }
-    }, DB);
+    }, DB , 'restaurants');
 });
 //get method and geting the var id
 app.get("/todos/:id", function(inpt, out) {
@@ -82,7 +82,7 @@ app.get("/todos/:id", function(inpt, out) {
         } else {
             return out.json(data);
         }
-    }, DB);
+    }, DB , 'restaurants');
     //  var toid = parseInt(inpt.params.id, 10);
 
     //var x = _.findWhere(todos, { id: toid });
@@ -107,7 +107,7 @@ app.get("/todos/:id", function(inpt, out) {
 //delete request
 app.delete('/todos/:id', function(req, res) {
 
-    tododb.del(DB, req.params.id).then(function(ok) {
+    tododb.del(DB, req.params.id , 'restaurants').then(function(ok) {
 
         if (ok.n > 0) {
             res.json(ok);
@@ -150,7 +150,7 @@ app.put('/todos/:id', function(req, res) {
         return res.status(400).send();
     }
 
-    tododb.updateId(DB, validAttributes, req.params.id).then(function(ok) {
+    tododb.updateId(DB, validAttributes, req.params.id , 'restaurants').then(function(ok) {
         res.json(ok);
 
         if (ok.n > 0) {

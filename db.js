@@ -37,10 +37,10 @@ exports.connectd = function(url) {
 
 // inster data
 
-exports.insertDocument = function(db, callback, data) {
+exports.insertDocument = function(db, callback, data ,colaction) {
 
 
-    db.collection('restaurants').insertOne(data, function(err, result) {
+    db.collection(colaction).insertOne(data, function(err, result) {
         assert.equal(err, null);
         console.log("Inserted a document into the restaurants collection.");
         callback("Inserted a document into the restaurants collection.");
@@ -51,10 +51,10 @@ exports.insertDocument = function(db, callback, data) {
 
 
 
-exports.manyinsert = function(db, callback, data) {
+exports.manyinsert = function(db, callback, data ,colaction) {
 
 
-    db.collection('restaurants').insertMany([data, data, data, data, data], function(err, result) {
+    db.collection(colaction).insertMany([data, data, data, data, data], function(err, result) {
         assert.equal(err, null);
         console.log(result.insertedCount);
         callback('Inserted a document into the restaurants collection.' + result.insertedCount);
@@ -67,12 +67,12 @@ exports.manyinsert = function(db, callback, data) {
 
 
 
-exports.getById = function(id, cb, db) {
+exports.getById = function(id, cb, db , colaction) {
 
     if (ObjectId(id)) {
         var id2 = ObjectId(id);
         console.log('ok');
-        db.collection('restaurants').find({ "_id": id2 }).toArray(cb);
+        db.collection(colaction).find({ "_id": id2 }).toArray(cb);
     } else {
         console.log('errror ');
     }
@@ -80,21 +80,21 @@ exports.getById = function(id, cb, db) {
 };
 
 
-exports.getAll = function(ob, cb, db) {
+exports.getAll = function(ob, cb, db , colaction) {
 
 
-    db.collection('restaurants').find(ob).toArray(cb);
+    db.collection(colaction).find(ob).toArray(cb);
 
 
 };
-exports.updateId = function(db, newvlu, id) {
+exports.updateId = function(db, newvlu, id , colaction) {
 
     return new Promise(function(fulfill, reject) {
 
         var id2 = ObjectId(id);
 
 
-        db.collection('restaurants').updateOne({ "_id": id2 }, { $set: newvlu },
+        db.collection(colaction).updateOne({ "_id": id2 }, { $set: newvlu },
             function(err, results) {
 
                 if (err) {
@@ -111,13 +111,13 @@ exports.updateId = function(db, newvlu, id) {
 
 
 };
-exports.del = function(db, id) {
+exports.del = function(db, id , colaction) {
 
     return new Promise(function(fulfill, reject) {
 
         var id2 = ObjectId(id);
 
-        db.collection('restaurants').deleteOne({ "_id": id2 },
+        db.collection(colaction).deleteOne({ "_id": id2 },
             function(err, results) {
                 if (err) {
                     reject(err);

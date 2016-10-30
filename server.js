@@ -11,6 +11,20 @@ var todos = [];
 var DB = {};
 var url = process.env.MONGODB_URI || 'mongodb://localhost:27017/tododb';
 
+var session = require('express-session');
+app.set('trust proxy', 1);
+app.use(session({
+
+  secret:'ma  d8864 #$%#$2',
+  httpOnly: true,
+  sameSite:true,
+  resave: false,
+   saveUninitialized: true
+}));
+// init
+
+// start session for an http request - response
+// this will define a session property to the request object
 //use the meddileware bodyparser
 //app.use(bodyParser.json());
 app.use(formidable());//working with post request
@@ -18,8 +32,9 @@ app.use(formidable());//working with post request
 req.fields; // contains non-file fields
  req.files; // contains files
 */
+
 app.post('/todos', function(reqst, respnd) {
-    var body = _.pick(reqst.body, 'descrption', 'complated');
+    var body = _.pick(reqst.fields, 'descrption', 'complated');
 
     if (!_.isBoolean(body.complated) || !_.isString(body.descrption) || body.descrption.trim().length == 0) {
 
@@ -143,7 +158,7 @@ app.delete('/todos/:id', function(req, res) {
 // put requist for updating  item
 app.put('/todos/:id', function(req, res) {
 
-    var body = _.pick(req.body, 'descrption', 'complated');
+    var body = _.pick(req.fields, 'descrption', 'complated');
     var validAttributes = {};
 
     if (body.hasOwnProperty('complated') && _.isBoolean(body.complated)) {
@@ -179,10 +194,24 @@ app.put('/todos/:id', function(req, res) {
 //app.use('/users', web.static(__dirname + '/www/user'));
 
 app.get('/users', function(req, res) {
-    res.sendFile('www/user/index.html', {root: __dirname })
+
+  req.session.regenerate(function(err) {
+    // will have a new session here
+  });
+
+  var sess = req.session;
+  if (sess.loged){
+    res.send('you are loged in !!');
+  }else {
+    res.sendFile('www/user/index.html', {root: __dirname });
+  }
 });
 app.post('/auth',function (req , res){
+  req.session.regenerate(function(err) {
+    // will have a new session here
+  });
 
+  var sess = req.session;
   var data = _.pick(req.fields , 'username' , 'password');
   if (validator.isEmail(data.username+'')){
 /*
@@ -204,8 +233,11 @@ tododb.getAll(fliter, function(err, results) {
       var pass = new Buffer(data.password).toString('base64');
 
 if (results[0].password == pass){
+  sess.loged =true;
+
   return res.json(results);
 } else {
+
   return res.send('invalid login data');
 
 }

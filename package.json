@@ -14,7 +14,9 @@
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "express-formidable": "^1.0.0",
+    "express-session": "^1.14.1",
     "mongodb": "^2.2.11",
+    "node-session": "^1.2.1",
     "sequelize": "^3.24.5",
     "underscore": "^1.8.3",
     "validator": "^6.1.0"

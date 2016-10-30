@@ -1,6 +1,7 @@
 var web = require('express');
 var bodyParser = require('body-parser'); //geting the medileware that parse the post
-
+var validator = require('validator');
+const formidable = require('express-formidable');
 //using underscore labrry
 var _ = require('underscore');
 var tododb = require('./db');
@@ -11,8 +12,12 @@ var DB = {};
 var url = process.env.MONGODB_URI || 'mongodb://localhost:27017/tododb';
 
 //use the meddileware bodyparser
-app.use(bodyParser.json());
-//working with post request
+//app.use(bodyParser.json());
+app.use(formidable());//working with post request
+/*
+req.fields; // contains non-file fields
+ req.files; // contains files
+*/
 app.post('/todos', function(reqst, respnd) {
     var body = _.pick(reqst.body, 'descrption', 'complated');
 
@@ -24,10 +29,13 @@ app.post('/todos', function(reqst, respnd) {
     body.descrption = body.descrption.trim();
 
 
-    tododb.insertDocument(DB, function(back) {
-        respnd.send(back);
-    }, body , 'restaurants');
-    console.log('description');
+    tododb.insertDocument(DB,  body , 'restaurants').then(function(ok){
+      respnd.send(ok);
+    },function(error){
+
+      respnd.send(error);
+
+    });
 
 });
 
@@ -168,6 +176,80 @@ app.put('/todos/:id', function(req, res) {
 
 });
 
+//app.use('/users', web.static(__dirname + '/www/user'));
+
+app.get('/users', function(req, res) {
+    res.sendFile('www/user/index.html', {root: __dirname })
+});
+app.post('/auth',function (req , res){
+
+  var data = _.pick(req.fields , 'username' , 'password');
+  if (validator.isEmail(data.username+'')){
+/*
+> console.log(new Buffer("Hello World").toString('base64'));
+SGVsbG8gV29ybGQ=
+> console.log(new Buffer("SGVsbG8gV29ybGQ=", 'base64').toString('ascii'))
+Hello World
+*/
+var user = new Buffer(data.username).toString('base64');
+var fliter = {
+  "email":user
+};
+
+tododb.getAll(fliter, function(err, results) {
+    if (err) {
+        console.log(err);
+        return res.send(err);
+    } else {
+      var pass = new Buffer(data.password).toString('base64');
+
+if (results[0].password == pass){
+  return res.json(results);
+} else {
+  return res.send('invalid login data');
+
+}
+    }
+}, DB , 'users');
+
+} else {
+  res.send('invalid login data');
+}
+});
+
+app.post('/reg' , function(req , res){
+
+  var data = _.pick(req.fields , 'username' , 'password' ,'email');
+  if (validator.isEmail(data.email+'')){
+
+    var user = new Buffer(data.email).toString('base64');
+    var userName = new Buffer(data.username).toString('base64');
+    var password = new Buffer(data.password).toString('base64');
+
+    var fliter = {
+      "email":user,
+      "name":userName,
+      "password":password
+    };
+
+
+    tododb.insertDocument(DB,  fliter , 'users').then(function(ok){
+      res.send(ok);
+    },function(error){
+
+      res.send(error);
+
+    });
+
+
+} else {
+
+res.send('erorr invalide email !!!');
+
+}
+
+
+});
 tododb.connectd(url).then(function(dbcon) {
     DB = dbcon;
     app.listen(port, function() {

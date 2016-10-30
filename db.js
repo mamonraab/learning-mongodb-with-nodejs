@@ -37,9 +37,21 @@ exports.connectd = function(url) {
 
 // inster data
 
-exports.insertDocument = function(db, callback, data ,colaction) {
+exports.insertDocument = function(db,data ,colaction) {
 
+return new Promise(function(fulfill , reject){
 
+  db.collection(colaction).insertOne(data, function(err, result) {
+    if (err){
+      reject(err);
+    } else {
+
+      fulfill('data hase been isterted');
+    }
+
+  });
+
+});
     db.collection(colaction).insertOne(data, function(err, result) {
         assert.equal(err, null);
         console.log("Inserted a document into the restaurants collection.");

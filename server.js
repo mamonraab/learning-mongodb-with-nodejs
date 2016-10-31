@@ -12,9 +12,9 @@ var DB = {};
 var url = process.env.MONGODB_URI || 'mongodb://localhost:27017/tododb';
 require('events').EventEmitter.prototype._maxListeners = 20;
 var xssFilters = require('xss-filters');
-
+var request = require("request");
 const crypto = require('crypto');
-
+var FacebookTokenStrategy = require('passport-facebook-token');
 var session = require('express-session');
 var secr = crypto.randomBytes(16);
 app.set('trust proxy', 1);
@@ -25,6 +25,18 @@ secret : secr.toString('hex'),
   resave: false,
    saveUninitialized: true
 }));
+
+
+app.use(new FacebookTokenStrategy({
+    clientID: 742912495847708,
+    clientSecret: '2eedf7e9cec4256a5bc4f183cb33f678'
+  }, function(accessToken, refreshToken, profile, done) {
+    User.findOrCreate({facebookId: profile.id}, function (error, user) {
+      return done(error, user);
+    });
+  }
+));
+
 
 // init
 
@@ -37,6 +49,22 @@ app.use(formidable());//working with post request
 req.fields; // contains non-file fields
  req.files; // contains files
 */
+
+app.get('/fb2',
+  passport.authenticate('facebook-token'),
+  function (req, res) {
+    // do something with req.user 
+    res.send(req.user? 200 : 401);
+  }
+);
+app.get('/fb', function(input, output) {
+output.header("Content-Type", "application/json; charset=utf-8");
+var url = "https://graph.facebook.com/v2.8/202409816773047?fields=feed.limit(10)%7Bfull_picture%2Cmessage%2Ccreated_time%7D&access_token=EAAKjrMtqCRwBADDc6J4DI6zk8UI649p7cimeRNNEVqZBLQ3Xnsx8Vocrs9Lu3FzhyO992Kz4iRljzu7o3seti16RLS43TLdXQyUJ0FpPBZAUPUJDNKPonfdZC5GGW8CvKCAIVV5SzhoksewpbjuNmIFiCzGeS8Se49z1BxxBQZDZD"
+request(url, function(error, response, body) {
+var jsonObject = JSON.parse(body);
+  output.json(jsonObject.feed.data[0]);
+});
+});
 
 app.post('/todos', function(reqst, respnd) {
     var body = _.pick(reqst.fields, 'descrption', 'complated');

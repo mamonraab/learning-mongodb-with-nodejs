@@ -4,7 +4,8 @@ https://developers.facebook.com/docs/facebook-login/access-tokens/#apptokens
 https://github.com/jaredhanson/passport-facebook
 
 
-
+curl -i -X GET \
+ "https://graph.facebook.com/v2.8/202409816773047?fields=feed.limit(10)%7Bfull_picture%2Cmessage%2Ccreated_time%7D&access_token=EAAKjrMtqCRwBADDc6J4DI6zk8UI649p7cimeRNNEVqZBLQ3Xnsx8Vocrs9Lu3FzhyO992Kz4iRljzu7o3seti16RLS43TLdXQyUJ0FpPBZAUPUJDNKPonfdZC5GGW8CvKCAIVV5SzhoksewpbjuNmIFiCzGeS8Se49z1BxxBQZDZD"
 202409816773047?fields=feed.limit(10){full_picture,message,created_time}
 
 https://developers.facebook.com/tools/explorer?method=GET&path=202409816773047%3Ffields%3Dfeed.limit(10)%7Bfull_picture%2Cmessage%2Ccreated_time%7D&version=v2.8

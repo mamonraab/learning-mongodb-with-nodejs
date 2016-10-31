@@ -2,7 +2,7 @@
 https://developers.facebook.com/docs/facebook-login/access-tokens/#apptokens
 
 https://github.com/jaredhanson/passport-facebook
-
+https://www.rocketmarketinginc.com/blog/get-never-expiring-facebook-page-access-token/
 
 curl -i -X GET \
  "https://graph.facebook.com/v2.8/202409816773047?fields=feed.limit(10)%7Bfull_picture%2Cmessage%2Ccreated_time%7D&access_token=EAAKjrMtqCRwBADDc6J4DI6zk8UI649p7cimeRNNEVqZBLQ3Xnsx8Vocrs9Lu3FzhyO992Kz4iRljzu7o3seti16RLS43TLdXQyUJ0FpPBZAUPUJDNKPonfdZC5GGW8CvKCAIVV5SzhoksewpbjuNmIFiCzGeS8Se49z1BxxBQZDZD"

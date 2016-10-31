@@ -10,17 +10,22 @@ var port = process.env.PORT || 3000;
 var todos = [];
 var DB = {};
 var url = process.env.MONGODB_URI || 'mongodb://localhost:27017/tododb';
+require('events').EventEmitter.prototype._maxListeners = 20;
+var xssFilters = require('xss-filters');
+
+const crypto = require('crypto');
 
 var session = require('express-session');
+var secr = crypto.randomBytes(16);
 app.set('trust proxy', 1);
 app.use(session({
-
-  secret:'ma  d8864 #$%#$2',
+secret : secr.toString('hex'),
   httpOnly: true,
   sameSite:true,
   resave: false,
    saveUninitialized: true
 }));
+
 // init
 
 // start session for an http request - response
@@ -41,7 +46,7 @@ app.post('/todos', function(reqst, respnd) {
         return respnd.sendStatus(404);
     }
 
-    body.descrption = body.descrption.trim();
+    body.descrption = xssFilters.inHTMLData(body.descrption.trim());
 
 
     tododb.insertDocument(DB,  body , 'restaurants').then(function(ok){
@@ -96,7 +101,7 @@ app.get("/todos/:id", function(inpt, out) {
                    If the string begins with "0", the radix is 8 (octal). This feature is deprecated
                    If the string begins with any other value, the radix is 10 (decimal)
     */
-    var id = inpt.params.id;
+    var id = xssFilters.inHTMLData(inpt.params.id);
 
     tododb.getById(id, function(err, data) {
         if (err) {
@@ -130,7 +135,7 @@ app.get("/todos/:id", function(inpt, out) {
 //delete request
 app.delete('/todos/:id', function(req, res) {
 
-    tododb.del(DB, req.params.id , 'restaurants').then(function(ok) {
+    tododb.del(DB, xssFilters.inHTMLData(req.params.id) , 'restaurants').then(function(ok) {
 
         if (ok.n > 0) {
             res.json(ok);
@@ -162,18 +167,18 @@ app.put('/todos/:id', function(req, res) {
     var validAttributes = {};
 
     if (body.hasOwnProperty('complated') && _.isBoolean(body.complated)) {
-        validAttributes.complated = body.complated;
+        validAttributes.complated = xssFilters.inHTMLData(body.complated);
     } else if (body.hasOwnProperty('complated')) {
         return res.status(400).send();
     }
 
     if (body.hasOwnProperty('descrption') && _.isString(body.descrption) && body.descrption.trim().length > 0) {
-        validAttributes.descrption = body.descrption;
+        validAttributes.descrption = xssFilters.inHTMLData(body.descrption);
     } else if (body.hasOwnProperty('descrption')) {
         return res.status(400).send();
     }
 
-    tododb.updateId(DB, validAttributes, req.params.id , 'restaurants').then(function(ok) {
+    tododb.updateId(DB, validAttributes, xssFilters.inHTMLData(req.params.id) , 'restaurants').then(function(ok) {
         res.json(ok);
 
         if (ok.n > 0) {
@@ -200,9 +205,11 @@ app.get('/users', function(req, res) {
   });
 
   var sess = req.session;
-  if (sess.loged){
+  if (req.session.loged){
     res.send('you are loged in !!');
   }else {
+
+    console.log(req.session.loged);
     res.sendFile('www/user/index.html', {root: __dirname });
   }
 });
@@ -220,7 +227,7 @@ SGVsbG8gV29ybGQ=
 > console.log(new Buffer("SGVsbG8gV29ybGQ=", 'base64').toString('ascii'))
 Hello World
 */
-var user = new Buffer(data.username).toString('base64');
+var user = new Buffer(xssFilters.inHTMLData(data.username)).toString('base64');
 var fliter = {
   "email":user
 };
@@ -230,10 +237,14 @@ tododb.getAll(fliter, function(err, results) {
         console.log(err);
         return res.send(err);
     } else {
-      var pass = new Buffer(data.password).toString('base64');
 
-if (results[0].password == pass){
-  sess.loged =true;
+      var pass = xssFilters.inHTMLData(data.password);
+
+      var hash = crypto.createHmac('sha512', results[0].secret)
+                         .update(pass)
+                         .digest('hex');
+if (results[0].password == hash){
+  req.session.loged =true;
 
   return res.json(results);
 } else {
@@ -254,19 +265,26 @@ app.post('/reg' , function(req , res){
   var data = _.pick(req.fields , 'username' , 'password' ,'email');
   if (validator.isEmail(data.email+'')){
 
-    var user = new Buffer(data.email).toString('base64');
-    var userName = new Buffer(data.username).toString('base64');
-    var password = new Buffer(data.password).toString('base64');
+    var user = new Buffer(xssFilters.inHTMLData(data.email.toLowerCase())).toString('base64');
+    var userName = new Buffer(xssFilters.inHTMLData(data.username)).toString('base64');
+    var password = xssFilters.inHTMLData(data.password);
 
+    var secret = crypto.randomBytes(16);
+    secret =secret.toString('hex');
+    var hash = crypto.createHmac('sha512', secret)
+                       .update(password)
+                       .digest('hex');
+    console.log(hash);
     var fliter = {
       "email":user,
       "name":userName,
-      "password":password
+      "password":hash,
+    "secret":secret
     };
 
 
     tododb.insertDocument(DB,  fliter , 'users').then(function(ok){
-      res.send(ok);
+      res.send(xssFilters.inHTMLData(data.username));
     },function(error){
 
       res.send(error);

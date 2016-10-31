@@ -27,6 +27,9 @@ secret : secr.toString('hex'),
 }));
 
 
+
+
+
 app.use(new FacebookTokenStrategy({
     clientID: 742912495847708,
     clientSecret: '2eedf7e9cec4256a5bc4f183cb33f678'

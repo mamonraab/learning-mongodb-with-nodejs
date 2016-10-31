@@ -1,6 +1,10 @@
 
 https://developers.facebook.com/docs/facebook-login/access-tokens/#apptokens
 
+https://developers.facebook.com/tools/explorer/742912495847708?method=GET&path=202409816773047%3Ffields%3Dfeed.limit(10)%7Bfull_picture%2Cmessage%2Ccreated_time%7D&version=v2.8
+https://developers.facebook.com/tools/explorer/742912495847708?method=GET&path=322687881439424%2Faccounts&version=v2.8
+
+
 https://github.com/jaredhanson/passport-facebook
 https://www.rocketmarketinginc.com/blog/get-never-expiring-facebook-page-access-token/
 

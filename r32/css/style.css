@@ -149,6 +149,7 @@ p {
 
 .slider img {
     width: 100%; 
+max-hieght: 300px;
 }
 
 #carousel-slider {

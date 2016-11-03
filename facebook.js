@@ -63,32 +63,37 @@ var all = {
 };
 output.header("Content-Type", "application/json; charset=utf-8");
 
- all.feed = mamonfetcher.fetchfb(url+query+token).then(function(data){
+mamonfetcher.fetchfb(url+query+token).then(function(data){
   var jsonObject = JSON.parse(data);
-output.json(jsonObject.feed);
+   all.feed = jsonObject.feed;
+   mamonfetcher.fetchfb(url+"369158126764881?fields=photos.limit(10){images}"+token).then(function(data){
+     var jsonObject = JSON.parse(data);
+      all.slide = jsonObject.photos;
+
+
+      mamonfetcher.fetchfb(url+"202409816773047?fields=picture.height(1080)"+token).then(function(data){
+        var jsonObject = JSON.parse(data);
+         all.cover = jsonObject.picture.data;
+         output.json(all);
+
+      },function(eror){
+       return  output.json({"error":"page problem"});
+
+      });
+
+
+   },function(eror){
+    return  output.json({"error":"page problem"});
+
+   });
 },function(eror){
  return  output.json({"error":"page problem"});
 
 });
 
-mamonfetcher.fetchfb(url+"369158126764881?fields=photos.limit(10){images}"+token).then(function(data){
-  var jsonObject = JSON.parse(data);
-   all.slide = jsonObject.photos;
-},function(eror){
- return  output.json({"error":"page problem"});
-
-});
-
-mamonfetcher.fetchfb(url+"202409816773047?fields=picture.height(1080)"+token).then(function(data){
-  var jsonObject = JSON.parse(data);
-   all.cover = jsonObject.picture.data;
-},function(eror){
- return  output.json({"error":"page problem"});
-
-});
 
 
-    output.json(all);
+
 
 
 });

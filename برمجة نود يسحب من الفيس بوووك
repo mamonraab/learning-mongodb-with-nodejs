@@ -1,3 +1,14 @@
+curl -i -X GET \
+ "https://graph.facebook.com/v2.8/369158126764881?fields=photos.limit(10)%7Bimages%7D&access_token=742912495847708%7CR7_vOrPKm34iLPAn7-eKq5sWBNc"
+
+
+
+
+
+
+
+
+
 
 https://developers.facebook.com/docs/facebook-login/access-tokens/#apptokens
 
